@@ -6,4 +6,10 @@ const HouseSchema = require('../models/Houses');
  const multer = require('multer');
  const housecontroller = new Housecontroller();// creación instancia del controlador
 
+ router.get('/houses', async (req, res) => {
+    //traer todas las casas
+    let houses = await HouseSchema.find();
+    res.json
+ })
+
  
