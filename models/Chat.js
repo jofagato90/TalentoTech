@@ -28,3 +28,4 @@ const ChatSchema = new moongoose.Schema({
 
 
 module.exports = mongoose.model('Chat', ChatSchema)
+
