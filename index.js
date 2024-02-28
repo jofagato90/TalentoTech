@@ -9,6 +9,10 @@ require('dotenv').config() // Obetenmos las variables de entorno
 const socket = require('socket.io') // Importamos la libreria socket.io
 const http = require('http').Server(app)
 const io = socket(http)
+
+/**GraphQl */
+const { createYoga } = require('graphql-yoga');
+const schema = require('./graphql/schema');
 /** Conexion a BD */
 const DB_URL = process.env.DB_URL || '';
 const mongoose = require('mongoose'); // Importo la libreria mongoose
@@ -57,6 +61,10 @@ app.use((req, res, next) => {
     res.io = io
     next()
 })
+
+const yoga = new createYoga({ schema });
+app.use('/graphql', yoga);
+
 //Ejecuto el servidor
 app.use(router)
 app.use('/uploads', express.static('uploads'));
