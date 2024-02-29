@@ -1,6 +1,6 @@
 const UserSchema = require('../models/User');
 const MessageSchema = require('../models/Message');
-
+const HouseSchema = require('../models/House')
 const resolvers = {    
         hello: () => {
             return "Hola Mundo!";
@@ -44,6 +44,53 @@ const resolvers = {
             catch(e){
                 console.log(e)
             }
+        },
+
+
+        House: async (_,{code}) => {
+         try {
+            return house = await HouseSchema.findById(code);
+         } catch(e){
+            console.log(encodeURIComponent)
+            
+          }
+ 
+        },
+
+        Houses: async () =>{
+        try {
+            return await HouseSchema.find();
+        } catch (e) {
+            console.log(e)
+         }
+
+        },
+ 
+        HousesByFilter: async(_,{filter}) =>{
+        try {
+            let query = {}
+
+            if (filter){
+               if(filter.city){
+                  query.city = {$regex: filter.city, $options: 'i'}// 'i' se utiliza para hacer una busqueda insesible de mayusculas y minusculas
+               }
+
+            if (filter.price){
+                query.price = {$regex: filter.price, $options: 'i'}
+            }
+
+            if (filter.type){
+                query.type = {$regex: filter.type, $options: 'i'}
+            }
+            const Houses = await HouseSchema.find(query)
+            return Houses;
+            }
+        } catch (e) {
+            console.log("Error obteniendo el usuario")
+            
+        }
+      
+
         },
 
         UsersByFilter: async (_, {filter}) => {

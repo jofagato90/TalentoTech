@@ -1,34 +1,89 @@
-const mongoose = require('mongoose') // Importando la libreria
-const fetch = require('node-fetch'); // Importar fetch si estás en un entorno de Node.js
+const express = require('express');
+ const router = express.Router();
+ const HouseSchema = require ('../models/House');
+ const multer = require ('multer');
 
-// Creando el modelo de users
-const HouseSchema = new mongoose.Schema({
-    state: {
-        required: true,
-        type: String,
-        validate: {
-            validator: async function(state) {
-              // Validacion del departamento
-              var response = await fetch('https://api-colombia.com/api/v1/Department');
-              var departments = await response.json()
-              return departments.some(department => department.name.toUpperCase().includes(state.toUpperCase()));
-            },
-            message: props => `${props.value} no es un Departamento de Colombia!`
-          }
-    },
-    city: {
-      required: true,
-      type: String,
-      validate: {
-          validator: async function(city) {
-            // Validacion del departamento
-            var response = await fetch('https://api-colombia.com/api/v1/City');
-            var cities = await response.json()
-            return cities.some(object => object.name.toUpperCase().includes(city.toUpperCase()));
-          },
-          message: props => `${props.value} no es una Ciudad de Colombia!`
-        }
-    }
+
+ router.get('/house', async (req, res)=>{
+ //traer todas las casas
+ let houses = await HouseSchema.find();
+ res.json(houses)
+
+ })
+
+ router.get('/house/:code', async(req, res)=>{
+ // traer una casa por código específico
+var code = req.params.code
+ let house = await HouseSchema.findById(code);
+ res.json(house)
+
 })
 
-module.exports = mongoose.model('house', HouseSchema) 
+
+ router.post('/house',async (req, res)=> {
+ // Crear una Casa
+ console.log(req.body)
+ let house = HouseSchema({
+    address: req.body.address,
+     city: req.body.city,
+     state:req.body.state,
+     size: req.body.size,
+     type: req.body.type,
+     price:req.body.price,
+     code: req.body.code
+ })
+
+ house.save().then((result) =>{
+     res.send(result)
+ }).catch((err) => {
+      res.send(err.message)
+
+ })
+
+ })
+
+router.patch('/houses/:code',(req,res) => {
+  //actualiza la una casa
+   //cuando viene por la url del servicio web params
+   var code = req.params.code
+
+   //cuando viene por el body se usa el body
+ var updateHouse = {
+     address: req.body.address,
+    city: req.body.city,
+   state:req.body.state,
+    size: req.body.size,
+    type: req.body.type,
+    price:req.body.price,
+    code: req.body.price
+
+  }
+
+  HouseSchema.findByIdAndUpdate(code, updateHouse,{new:true}).then((result) =>{
+       res.send(result)
+   }).catch((error) =>{
+     console.log(error)
+     res.send("Error Actualizando los datos de la casa")
+
+  })
+
+ })
+
+
+ router.delete('/house/:code',(req,res)=> {
+
+   var code =  req.params.code
+  // para eliminar por cualquier parametro
+  HouseSchema.deleteOne({code:code}).then (() =>{
+      res.json({"status": "success", "message": "House deleted successfully"})
+   }).catch(() =>{
+    console.log(error)
+    res.json({"status": "failed", "message": "Error deleting House"})
+
+  })
+
+ })
+
+
+ module.exports = router
+

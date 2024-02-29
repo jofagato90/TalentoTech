@@ -18,6 +18,19 @@ avatar: { type: GraphQLString}
 }
 })
 
+const House = new GraphQLObjectType({
+name : 'House',
+fields:{
+  address: {type: GraphQLString},
+  city: {type: GraphQLString},
+  state:{type: GraphQLString},
+  size: {type: GraphQLString},
+  type: {type:GraphQLString},
+  price:{type: GraphQLString},
+  code: {type: GraphQLString}
+}
+})
+
 const Message = new GraphQLObjectType({
 name: 'Message',
 fields: {
@@ -29,21 +42,6 @@ readed: {type: GraphQLBoolean}
 }
 })
 
-//TODO: Implement House GraphQLObjectType
-// type House {
-//   id: ID!
-//   address: String!
-//   city: String!
-//   state: String!
-//   size: Int!
-//   type: String!
-//   zip_code: String!
-//   code: String!
-//   rooms: Int!
-//   bathrooms: Int!
-//   price: Int!
-//   image: String!
-// }
 
 const UserFilterInput = new GraphQLInputObjectType({
 name: 'UserFilterInput',
@@ -51,6 +49,15 @@ fields: {
 name: {type: GraphQLString},
 lastname: {type: GraphQLString},
 email: {type: GraphQLString}
+}
+})
+
+const HousesFilterInput = new GraphQLInputObjectType({
+name : 'HousesFilterInput',
+fields:{
+city:{type:GraphQLString},
+price:{type:GraphQLString},
+type: {type:GraphQLString}
 }
 })
 
@@ -75,6 +82,21 @@ type: new GraphQLList(User),
 resolve: resolvers.Users
 },
 
+
+House:{
+type:House,
+resolve:resolvers.House,
+args:{
+code: {type:GraphQLString}
+}
+},
+
+Houses:{
+type: new GraphQLList(House),
+resolve: resolvers.Houses
+},
+
+
 Message: {
   type: Message,
   resolve: resolvers.Message,
@@ -97,7 +119,16 @@ resolve: resolvers.UsersByFilter,
 args: {
 filter: { type: UserFilterInput }
 }
-}
+},
+
+HousesByFilter :{
+type: new GraphQLList(House),
+resolve: resolvers.HousesByFilter,
+args:{
+filter:{type: HousesFilterInput}
+   }
+
+ }
 
 }
 
