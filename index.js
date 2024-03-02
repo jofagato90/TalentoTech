@@ -23,7 +23,7 @@
  const houseRoutes = require('./routes/HouseRoutes');
  const messageRoutes = require('./routes/MessageRoutes');
  const MessageSchema = require('./models/Message');
-
+const departmentRoutes = require('./read_file')
  //Metodo [GET, POST, PUT, PATCH, DELETE]
  // Nombre del servicio [/]
  router.get('/', (req, res) => {
@@ -72,8 +72,11 @@
  app.use('/', userRoutes)
  app.use('/', houseRoutes)
  app.use('/', messageRoutes)
+ app.use('/', departmentRoutes)
 
  /** Ejecucion del servidor */
  http.listen(port, () => {
      console.log('Listen on ' + port)
  })
+
+ module.exports = http

@@ -49,9 +49,9 @@ router.patch('/houses/:code',(req,res) => {
 
    //cuando viene por el body se usa el body
  var updateHouse = {
-     address: req.body.address,
+    address: req.body.address,
     city: req.body.city,
-   state:req.body.state,
+    state:req.body.state,
     size: req.body.size,
     type: req.body.type,
     price:req.body.price,
@@ -70,11 +70,12 @@ router.patch('/houses/:code',(req,res) => {
  })
 
 
- router.delete('/house/:code',(req,res)=> {
+ router.delete('/house/:code',(req, res)=> {
 
    var code =  req.params.code
   // para eliminar por cualquier parametro
-  HouseSchema.deleteOne({code:code}).then (() =>{
+  
+  HouseSchema.deleteOne({code:code}).then(() =>{
       res.json({"status": "success", "message": "House deleted successfully"})
    }).catch(() =>{
     console.log(error)

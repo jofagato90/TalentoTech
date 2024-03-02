@@ -61,6 +61,14 @@ type: {type:GraphQLString}
 }
 })
 
+const MessageFilterInput = new GraphQLInputObjectType({
+  name: 'MessageFilterInput',
+  fields: {
+    body: {type: GraphQLString},
+    from: {type: GraphQLString},
+    to: {type: GraphQLString}
+  }
+})
 
 const queries = {
 
@@ -128,7 +136,15 @@ args:{
 filter:{type: HousesFilterInput}
    }
 
- }
+ },
+
+ MessagesByFilter: {
+  type: new GraphQLList(Message),
+  resolve: resolvers.MessagesByFilter,
+  args: {
+    filter: { type: MessageFilterInput }
+  }
+}
 
 }
 

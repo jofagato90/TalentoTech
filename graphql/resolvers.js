@@ -119,7 +119,32 @@ const resolvers = {
                 console.log("Error obteniendo el usuario")
 
             }
-        }
+        },
+
+        MessagesByFilter: async (_, {filter}) => {
+            try{
+                let query = {};
+                if(filter){
+                    if(filter.from){
+                        query= {from: filter.from} 
+                    }
+                    if(filter.to){
+                        query = { to: filter.to}
+                    }
+                    if(filter.body){
+                        query.body = { $regex: filter.body, $options: 'i'}
+                    }
+
+                    const message = await MessageSchema.find(query).populate('from')
+                                            .populate('to') 
+                    return message;
+                }
+
+            }catch(e){
+                console.log("Error obteniendo el mensaje")
+            }
+        },
+
 
 }
 module.exports = resolvers
