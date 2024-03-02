@@ -121,19 +121,15 @@ describe('POST / LOGIN', () => {
 // })
 
 
-describe('User /delete ',() => {
-    it('Succes delete with _id', async()=>{
-       const response = await request(app).delete('/user/'+ userId).set('Authorization', 'Bearer', + token)
-       expect(response.statusCode).toBe(200)
-       expect(response.body.status).toBe("succes")
 
-
+describe('POST /delete', () => {
+    it('Success delete with _id', async () => {        
+        const response = await request(app).delete('/user/'+ userId)
+                                        .set('Authorization', 'Bearer ' + token)
+        expect(response.statusCode).toBe(200)
+        expect(response.body.status).toBe("success")
     })
-
 })
-
-
-
 
 
 
