@@ -2,9 +2,12 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const UserSchema = require('../models/User');
+const MessageSchema = require('../models/Message');
 const UserController = require('../controllers/UserController'); //Importando el controllador
 const multer = require('multer');
 const userController = new UserController(); // creando una instancia de ese controlador
+
+
 
 router.get('/user', async (req, res) => {
     //Traer todos los usuarios
@@ -33,29 +36,37 @@ router.post('/user', async (req, res) => {
         email: req.body.email,
         id: req.body.id,
         password: hashedPassword
-        
     })
-    console.log(user.email);  
+
     user.save().then((result) => {
         res.send(result)
     }).catch((err) => {
-        console.log(err)
-       
+        if(err.code == 11000){
+            res.send({"status" : "error", "message" :"El correo ya fue registrado"})      
+        }else{
             res.send({"status" : "error", "message" :err.message})      
-        
+        }
     })
 })
 
-router.patch('/user/:id', userController.validateToken, (req, res) => {
+
+
+router.patch('/user/:id', userController.validateToken, async (req, res) => {
     //Actualizar un usuario
     // Cuando viene por la url del servicio web params
     var id = req.params.id
+
+    let hashedPassword;
+    if(req.body.password){ 
+        hashedPassword = await bcrypt.hash(req.body.password, 10)
+    }
     
     // Cuando viene por el body se usa body
     var updateUser = {
         name: req.body.name,
         lastname: req.body.lastname,
         email: req.body.email,
+        password: hashedPassword,
         id: req.body.id
     }
 
@@ -97,14 +108,6 @@ router.delete('/user/:id', userController.validateToken, (req, res) => {
     //     })
 })
 
-// router.post('/login', (req, res) => {
-//     const email = req.body.email;
-//     const password = req.body.password;
-
-//     userController.login(email, password).then((result) => {
-//         res.send(result)
-//     })
-// })
 router.post('/login', (req, res) => {
     const email = req.body.email;
     const password = req.body.password;

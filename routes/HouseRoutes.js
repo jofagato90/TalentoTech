@@ -2,13 +2,18 @@ const express = require('express');
  const router = express.Router();
  const HouseSchema = require ('../models/House');
  const multer = require ('multer');
+ const cors = require('cors');
 
+ const app = express();
+
+// Agrega el middleware de CORS para permitir solicitudes desde cualquier origen
+app.use(cors());
 
  router.get('/house', async (req, res)=>{
  //traer todas las casas
  let houses = await HouseSchema.find();
  res.json(houses)
-
+ 
  })
 
  router.get('/house/:code', async(req, res)=>{
